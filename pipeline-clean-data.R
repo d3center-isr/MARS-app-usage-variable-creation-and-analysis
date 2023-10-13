@@ -212,7 +212,7 @@ rm(list = ls())
 # Output:
 #   dat_mars_for_ema_assessed_proximal_outcome.rds
 #   dat_mars_for_nonema_assessed_proximal_outcome.rds
-source("prepare-analytic-datasets/create-basic-analysis-dataset.R")
+source("prepare-analytic-datasets/remove-did-not-meet-inclusion-criteria.R")
 rm(list = ls())
 
 ###############################################################################
