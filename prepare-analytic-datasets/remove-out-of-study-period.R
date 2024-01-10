@@ -58,6 +58,11 @@ dat_cleaned_burst_with_outside_study_indicator <- bind_rows(list_all_burst)
 dat_within_study <- dat_cleaned_burst_with_outside_study_indicator %>% filter(is_outside_study == 0) %>% select(-is_outside_study)
 dat_outside_study <- dat_cleaned_burst_with_outside_study_indicator %>% filter(is_outside_study == 1) %>% select(-is_outside_study)
 
+dat_within_study <- dat_within_study %>%
+  mutate(drop_due_to_changed_wakeup = if_else((mars_id == "mars_53") & ((quick_survey_id == 1) | (quick_survey_id == 2)), 1, 0))
+
+dat_within_study <- dat_within_study %>% filter(drop_due_to_changed_wakeup == 0) %>% select(-drop_due_to_changed_wakeup)
+
 ###############################################################################
 # Were there any participants removed as a result of this step?
 ###############################################################################
