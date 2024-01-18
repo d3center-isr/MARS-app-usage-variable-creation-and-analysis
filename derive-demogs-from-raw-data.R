@@ -7,6 +7,7 @@ dat_visit_dates <- readRDS(file = file.path(path_manipulated_data, "dat_visit_da
 redcap_crosswalk <- readRDS(file = file.path(path_visit_data, "redcap_crosswalk.rds"))
 redcap_metadata <- readRDS(file = file.path(path_demog_data, "redcap_metadata.rds"))
 redcap_data <- readRDS(file = file.path(path_demog_data, "redcap_data.rds"))
+intake_data_baseline_tobacco_history <- readRDS(file = file.path(path_demog_data, "intake_data_baseline_tobacco_history.rds"))
 
 redcap_crosswalk <- redcap_crosswalk %>% rename(rsr_id = SubjectID, redcap_id = REDCap_ID)
 grafana_crosswalk <- dat_visit_dates %>% select(rsr_id, mars_id)
@@ -99,6 +100,11 @@ dat_tobacco_history <- redcap_data %>%
          baseline_tobacco_history)
 
 dat_demogs <- left_join(x = dat_demogs, y = dat_tobacco_history, by = join_by(redcap_id == redcap_id))
+
+intake_data_baseline_tobacco_history <- intake_data_baseline_tobacco_history %>% rename(baseline_tobacco_history_recouped = baseline_tobacco_history)
+dat_demogs <- left_join(x = dat_demogs, y = intake_data_baseline_tobacco_history, by = join_by(rsr_id == rsr_id))
+dat_demogs <- dat_demogs %>% mutate(baseline_tobacco_history = if_else(is.na(baseline_tobacco_history), baseline_tobacco_history_recouped, baseline_tobacco_history))
+dat_demogs <- dat_demogs %>% select(-baseline_tobacco_history_recouped)
 
 # ------------------------------------------------------------------------------
 # Variable: gender

@@ -55,13 +55,12 @@ for(i in 1:length(all_ids)){
 }
 
 dat_cleaned_burst_with_outside_study_indicator <- bind_rows(list_all_burst)
+
+###############################################################################
+# First, remove observations outside of study period
+###############################################################################
 dat_within_study <- dat_cleaned_burst_with_outside_study_indicator %>% filter(is_outside_study == 0) %>% select(-is_outside_study)
 dat_outside_study <- dat_cleaned_burst_with_outside_study_indicator %>% filter(is_outside_study == 1) %>% select(-is_outside_study)
-
-dat_within_study <- dat_within_study %>%
-  mutate(drop_due_to_changed_wakeup = if_else((mars_id == "mars_53") & ((quick_survey_id == 1) | (quick_survey_id == 2)), 1, 0))
-
-dat_within_study <- dat_within_study %>% filter(drop_due_to_changed_wakeup == 0) %>% select(-drop_due_to_changed_wakeup)
 
 ###############################################################################
 # Were there any participants removed as a result of this step?
@@ -71,21 +70,34 @@ ids_present_after_dropping_out_of_mrt_period_rows <- unique(dat_within_study[["m
 ids_absent_from_within_mrt_period_rows <- setdiff(x = ids_present_raw_data, y = ids_present_after_dropping_out_of_mrt_period_rows)  # There is only one participant who did not make the cut
 
 ###############################################################################
+# For mars_53, there is one day for which block 4 and 5 came before block 1
+# (block numbers indexed by zero). We note that there is no two-question survey
+# associated with blocks 0, 2, 3.
+# This phenomenon is likely due to an adjustment of wake up time that happened 
+# on that day.
+# Decision: Discard block 4 and 5 data but keep block 1 data.
+###############################################################################
+dat_within_study <- dat_within_study %>%
+  mutate(drop_due_to_changed_wakeup = if_else((mars_id == "mars_53") & ((quick_survey_id == 1) | (quick_survey_id == 2)), 1, 0))
+
+dat_within_study_copy <- dat_within_study %>% filter(drop_due_to_changed_wakeup == 0) %>% select(-drop_due_to_changed_wakeup)
+
+###############################################################################
 # Next, match each sequence to decision points
 ###############################################################################
-dat_within_study <- dat_within_study %>% 
+dat_within_study_copy <- dat_within_study_copy %>% 
   mutate(decision_point = (6 * floor(int_length(v1_date_began_local %--% block_start_local)/(60*60*24))) + (block_number + 1)) %>%
   select(mars_id, olson, decision_point, everything())
 
 ###############################################################################
 # Fill in the gaps for those decision points not represented in the raw data
 ###############################################################################
-all_ids_within_study <- unique(dat_within_study[["mars_id"]])
+all_ids_within_study <- unique(dat_within_study_copy[["mars_id"]])
 
 skeleton <- data.frame(mars_id = rep(x = all_ids_within_study, each = 60),
                        decision_point = rep(x = 1:60, times = length(all_ids_within_study)))
 
-dat_matched_to_decision_points <- left_join(x = skeleton, y = dat_within_study, by = join_by(mars_id == mars_id, decision_point == decision_point))
+dat_matched_to_decision_points <- left_join(x = skeleton, y = dat_within_study_copy, by = join_by(mars_id == mars_id, decision_point == decision_point))
 dat_matched_to_decision_points <- dat_matched_to_decision_points %>% mutate(cluster_id = ceiling(decision_point/6)) %>% select(mars_id, olson, cluster_id, decision_point, everything())
 
 ###############################################################################
@@ -93,6 +105,7 @@ dat_matched_to_decision_points <- dat_matched_to_decision_points %>% mutate(clus
 ###############################################################################
 saveRDS(ids_absent_from_within_mrt_period_rows, file = file.path(path_manipulated_data, "mars_ids_did_not_have_mhealth_data_within_mrt_period.rds"))
 saveRDS(dat_within_study, file = file.path(path_manipulated_data, "dat_within_study.rds"))
+saveRDS(dat_within_study_copy, file = file.path(path_manipulated_data, "dat_within_study_after_dropped_due_to_changed_wakeup.rds"))
 saveRDS(dat_outside_study, file = file.path(path_manipulated_data, "dat_outside_study.rds"))
 saveRDS(dat_cleaned_burst_with_outside_study_indicator, file = file.path(path_manipulated_data, "dat_cleaned_burst_with_outside_study_indicator.rds"))
 saveRDS(dat_matched_to_decision_points, file = file.path(path_manipulated_data, "dat_matched_to_decision_points.rds"))

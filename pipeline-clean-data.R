@@ -182,7 +182,7 @@ rm(list = ls())
 #   dat_within_study.rds
 #   dat_outside_study.rds
 #   dat_matched_to_decision_points.rds
-source("prepare-analytic-datasets/remove-out-of-study-period.R")
+source("remove-out-of-study-period.R")
 rm(list = ls())
 
 # Input:
@@ -191,7 +191,7 @@ rm(list = ls())
 #   mars_ids_pilot.rds
 #   mars_ids_did_not_meet_ema_completion_criteria.rds
 #   mars_ids_excluded_from_all_analytic_datasets.rds
-source("prepare-analytic-datasets/screen-for-analytical-dataset-inclusion.R")
+source("screen-for-analytical-dataset-inclusion.R")
 rm(list = ls())
 
 ###############################################################################
@@ -212,7 +212,7 @@ rm(list = ls())
 # Output:
 #   dat_mars_for_ema_assessed_proximal_outcome.rds
 #   dat_mars_for_nonema_assessed_proximal_outcome.rds
-source("prepare-analytic-datasets/remove-did-not-meet-inclusion-criteria.R")
+source("remove-did-not-meet-inclusion-criteria.R")
 rm(list = ls())
 
 ###############################################################################
