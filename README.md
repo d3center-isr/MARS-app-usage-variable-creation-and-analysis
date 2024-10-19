@@ -6,11 +6,11 @@ urlcolor: magenta
 ---
 --->
 
-# CORE-MARS
+# MARS APP ENGAGEMENT PIPELINE & ANALYSIS
 
 ## About this Repository
 
-This repository contains a data pipeline that produces a core dataset that may be used for many types of subsequent data analyses relating to the Mobile Assistance for Regulating Smoking (MARS) Micro-Randomized Trial (MRT).
+This repository contains a data pipeline that produces a core dataset that may be used for many types of subsequent data analyses relating to the Mobile Assistance for Regulating Smoking (MARS) Micro-Randomized Trial (MRT). In addition, it contains an additional pipeline that curates engagement variables on top of the core dataset.
 
 ## Protocol for the MARS MRT
 
