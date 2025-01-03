@@ -20,3 +20,7 @@ Nahum-Shani, I., Potter, L. N., Lam, C. Y., Yap, J., Moreno, A., Stoffel, R., ..
 
 `pipeline-clean-data.R` is a script that documents the sequence in which each step is executed in the data pipeline.
 
+## App Engagement Pipeline
+
+`curate_app_usage_pipeline_gitrepo.R` is a script that curates and processes engagement indicators based on the app log data.
+
