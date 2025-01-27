@@ -24,3 +24,7 @@ Nahum-Shani, I., Potter, L. N., Lam, C. Y., Yap, J., Moreno, A., Stoffel, R., ..
 
 `curate_app_usage_pipeline_gitrepo.R` is a script that curates and processes engagement indicators based on the app log data.
 
+## Analysis file
+`analysis_file_upload.R` contains statistical analyses performed for the manuscript "Antecedents and Consequences of Different Indicators of Engagement With a Digital Intervention for Tobacco Cessation" (Yu et al., in prep for npj Digital Medicine).
+
+
